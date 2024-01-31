@@ -1,18 +1,65 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    public PlayerInputControl inputControl;
+    private Rigidbody2D Rb;
+    public Vector2 inputDirection;
+    [Header("BasicForce")]
+    public float speed = 250;
+    public float jumpforce = 10;
+
+    private void Awake() {
+        inputControl = new PlayerInputControl();
+        Rb = GetComponent<Rigidbody2D>();
+
+    
+            
+            inputControl.InGamePlay.Jump.started += Jump;
+
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+
+    private void OnEnable() {
+        inputControl.Enable();
+    } 
+    private void OnDisable() {
+        inputControl.Disable();
+    }
+    private void Update() {
+        inputDirection = inputControl.InGamePlay.Move.ReadValue<Vector2>();
         
+        
+    }
+    private void FixedUpdate() {
+        Move();
+    }
+
+    public void Move(){
+        Rb.velocity = new Vector2(speed * Time.deltaTime * inputDirection.x, Rb.velocity.y);
+       
+
+        //character Flip人物翻转
+
+        //初始化时继承原值，
+        int faceDir = (int)transform.localScale.x;
+        if(inputDirection.x > 0)
+            faceDir = 1;
+        if(inputDirection.x < 0)
+            faceDir = -1;
+        transform.localScale = new Vector3(faceDir, 1 , 1); 
+    }
+    private void Jump(InputAction.CallbackContext context)
+    {
+         if (GetComponent<PhysicsCheck>().isGround)
+        {
+        // Debug.Log("JumpPressed");
+        Rb.AddForce(jumpforce * transform.up,ForceMode2D.Impulse);
+        }
     }
 }
