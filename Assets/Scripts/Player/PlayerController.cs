@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D Rb;
     public Vector2 inputDirection;
     [Header("BasicForce")]
+    // public float walkSpeed = 125;
+    // public float runSpeed = 250;
     public float speed = 250;
     public float jumpforce = 10;
 
@@ -17,8 +20,6 @@ public class PlayerController : MonoBehaviour
         inputControl = new PlayerInputControl();
         Rb = GetComponent<Rigidbody2D>();
 
-    
-            
             inputControl.InGamePlay.Jump.started += Jump;
 
         
@@ -41,6 +42,9 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Move(){
+        // if(math.abs(inputDirection.x) >= 0.6)
+        //     speed = runSpeed;
+        // else speed = walkSpeed;
         Rb.velocity = new Vector2(speed * Time.deltaTime * inputDirection.x, Rb.velocity.y);
        
 
