@@ -8,8 +8,8 @@ using UnityEngine.Timeline;
 public class Character : MonoBehaviour
 {
     [Header("Character Attributes")]
-    public int maxHealth;
-    public int currentHealth;
+    public float maxHealth;
+    public float currentHealth;
     public bool isDead;
     [Header("Invulnerable Attributes")]
     public float invulnerableDuration;
@@ -18,9 +18,11 @@ public class Character : MonoBehaviour
 
     public UnityEvent<Transform> OnTakeDamage;
     public UnityEvent OnDeath;
+    public UnityEvent<Character> OnHealthChange;
 
     private void Start() {
         currentHealth = maxHealth;
+        OnHealthChange?.Invoke(this);
     }
 
     private void Update() {
@@ -48,6 +50,8 @@ public class Character : MonoBehaviour
             currentHealth = 0;
             OnDeath?.Invoke();
         }
+
+        OnHealthChange?.Invoke(this);
     }
     /// <summary>
     /// 
